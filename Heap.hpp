@@ -34,6 +34,17 @@ struct Element {
     }
 };
 
+template<typename Comp>
+struct NestedElementComparator {
+    Comp comp;
+
+    template<typename K, typename V>
+    bool operator()(const Element<int, Element<K, V> > &lhs,
+                    const Element<int, Element<K, V> > &rhs) const {
+        return comp(lhs.value.value, rhs.value.value);
+    }
+};
+
 template<typename K, typename V, typename Compare>
 class IndexedHeap {
     // Implementation of Indexed Heap
@@ -186,6 +197,30 @@ public:
         for (int i = parent(heap.size() - 1); i >= 0; --i) {
             sift_down(i);
         }
+    }
+
+    std::vector<Element<K, V> > topk(int k) {
+        if (empty()) {
+            return {};
+        }
+        if (k > size()) {
+            k = size();
+        }
+        IndexedHeap<int, Element<K, V>, NestedElementComparator<Compare> > aux_heap;
+        std::vector<Element<K, V> > ret;
+        aux_heap.push({0, heap[0]});
+        for (int i = 0; i < k; i++) {
+            ret.push_back(aux_heap.top().value);
+            int cur = aux_heap.top().key;
+            aux_heap.pop();
+            if (left(cur) < size()) {
+                aux_heap.push(left(cur), heap[left(cur)]);
+            }
+            if (right(cur) < size()) {
+                aux_heap.push(right(cur), heap[right(cur)]);
+            }
+        }
+        return ret;
     }
 };
 

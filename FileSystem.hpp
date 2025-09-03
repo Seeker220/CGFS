@@ -136,7 +136,7 @@ public:
         if (!(files.count(filename))) {
             throw std::out_of_range("No file exists with given filename.");
         }
-        std::cout << "Snapshot History for File" << filename << "\n";
+        std::cout << "Snapshot History for File '" << filename << "'\n";
         TreeNode *current = files.get(filename)->active_version;
         std::vector<TreeNode *> snapshots;
         while (current->parent != nullptr) {
@@ -167,17 +167,11 @@ public:
 
     void print_recent_files(int num) {
         // prints recent files sorted by last modified upto num elements
-        std::vector<Element<std::string, time_t> > tempv = {};
-        int i = 0;
-        while (!(recent_files.empty()) && (i < num)) {
-            Element<std::string, time_t> recent_file = recent_files.top();
-            tempv.push_back({recent_file});
-            recent_files.pop();
-            std::cout << "Filename : " << recent_file.key << ", Last Modified at : " << timeToString(recent_file.value)
+        std::vector<Element<std::string, time_t> > tempv = recent_files.topk(num);
+        for (const Element<std::string, time_t> &elem: tempv) {
+            std::cout << "Filename : " << elem.key << ", Last Modified at : " << timeToString(elem.value)
                     << "\n";
-            i++;
         }
-        recent_files.append(tempv);
     }
 
     void print_recent_files() {
@@ -195,14 +189,9 @@ public:
 
     void print_biggest_trees(int num) {
         // prints biggest trees sorted by total versions upto num elements
-        std::vector<Element<std::string, int> > tempv = {};
-        int i = 0;
-        while (!(biggest_trees.empty()) && (i < num)) {
-            Element<std::string, int> big_tree = biggest_trees.top();
-            tempv.push_back({big_tree});
-            biggest_trees.pop();
-            std::cout << "Filename : " << big_tree.key << ", Total Version : " << big_tree.value << "\n";
-            i++;
+        std::vector<Element<std::string, int> > tempv = biggest_trees.topk(num);
+        for (const Element<std::string, int> &elem: tempv) {
+            std::cout << "Filename : " << elem.key << ", Total Version : " << elem.value << "\n";
         }
         biggest_trees.append(tempv);
     }

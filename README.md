@@ -88,10 +88,10 @@ We are going to ignore complexity to take input/ print output.
     * Timestamp
     * Message
 
-* **RECENT FILES `[num]`** `O(num log(N) + N)`  
+* **RECENT FILES `[num]`** `O(num log(num))`  
   Lists files in descending order of their last modification time restricted to the first num entries. If no num is provided, it shows all files.
 
-* **BIGGEST TREES `[num]`** `O(num log(N) + N)`  
+* **BIGGEST TREES `[num]`** `O(num log(num))`  
   Lists files in descending order of their total version count restricted to the first num entries. If no num is provided, it shows all files.
 
 * **DETAILS `<filename>`** `O(1)`  
