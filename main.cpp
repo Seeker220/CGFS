@@ -13,6 +13,11 @@ std::string rawinput() {
     
     while (std::cin.get(ch)) {
         if (ch == '\x07') { // Ctrl+G (ASCII 7 - BEL character)
+            // Consume any immediately following newline to prevent it from
+            // being interpreted as an empty command in the main loop
+            if (std::cin.peek() == '\n') {
+                std::cin.get(); // consume the newline
+            }
             break;
         }
         if (ch == '\n') {
