@@ -193,7 +193,6 @@ public:
         for (const Element<std::string, int> &elem: tempv) {
             std::cout << "Filename : " << elem.key << ", Total Version : " << elem.value << "\n";
         }
-        biggest_trees.append(tempv);
     }
 
     void print_biggest_trees() {
