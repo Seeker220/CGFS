@@ -26,7 +26,6 @@ struct File {
     HashMap<int, TreeNode *> version_map;
     int total_versions;
     std::string name;
-    std::vector<TreeNode *> snapshot_history;
     time_t last_modification_time;
 
     File(const std::string &filename, const std::string &content) {
@@ -46,7 +45,6 @@ struct File {
         }
         active_version->snapshot_timestamp = time(nullptr);
         active_version->message = message;
-        snapshot_history.push_back(active_version);
     }
 
     void newversion(const std::string &content, TreeNode *parent, int version_id) {

@@ -3,11 +3,13 @@
 
 #include "File.hpp"
 #include "Heap.hpp"
+#include <ranges>
 #include <vector>
 #include <string>
 #include <stdexcept>
 #include <ctime>
 #include <iostream>
+#include <algorithm>
 
 
 class FileSystem {
@@ -131,12 +133,24 @@ public:
     }
 
     void history(const std::string &filename) const {
-        // shows snapshot history sorted by timestamp
+        // shows snapshotted versions of the file in ascending order of snapshot_timestamp, which lie on the path from active_node to the root in the file tree
         if (!(files.count(filename))) {
             throw std::out_of_range("No file exists with given filename.");
         }
         std::cout << "Snapshot History for File" << filename << "\n";
-        for (TreeNode *&snap: files.get(filename)->snapshot_history) {
+        TreeNode *current = files.get(filename)->active_version;
+        std::vector<TreeNode *> snapshots;
+        while (current->parent != nullptr) {
+            if (current->isSnapshot()) {
+                snapshots.push_back(current);
+            }
+            current = current->parent;
+        }
+        snapshots.push_back(current);
+        std::sort(snapshots.rbegin(), snapshots.rend(), [](const TreeNode *a, const TreeNode *b) {
+            return a->snapshot_timestamp < b->snapshot_timestamp;
+        });
+        for (TreeNode *&snap: snapshots) {
             std::cout << "VersionID : " << snap->version_id << " TimeStamp : " << snap->snapshot_timestamp <<
                     " Message : " << snap->message << "\n";
         }
@@ -154,6 +168,21 @@ public:
         }
     }
 
+    void print_recent_files(int num) {
+        // prints recent files sorted by last modified upto num elements
+        std::vector<Element<std::string, time_t> > tempv = {};
+        int i = 0;
+        while (!(recent_files.empty()) && (i < num)) {
+            Element<std::string, time_t> recent_file = recent_files.top();
+            tempv.push_back({recent_file});
+            recent_files.pop();
+            std::cout << "Filename : " << recent_file.key << ", Last Modified at : " << timeToString(recent_file.value)
+                    << "\n";
+            i++;
+        }
+        recent_files.build(tempv);
+    }
+
     void print_recent_files() {
         // prints recent files sorted by last modified
         std::vector<Element<std::string, time_t> > tempv = {};
@@ -165,6 +194,20 @@ public:
                     << "\n";
         }
         recent_files.build(tempv);
+    }
+
+    void print_biggest_trees(int num) {
+        // prints biggest trees sorted by total versions upto num elements
+        std::vector<Element<std::string, int> > tempv = {};
+        int i = 0;
+        while (!(biggest_trees.empty()) && (i < num)) {
+            Element<std::string, int> big_tree = biggest_trees.top();
+            tempv.push_back({big_tree});
+            biggest_trees.pop();
+            std::cout << "Filename : " << big_tree.key << ", Total Version : " << big_tree.value << "\n";
+            i++;
+        }
+        biggest_trees.build(tempv);
     }
 
     void print_biggest_trees() {

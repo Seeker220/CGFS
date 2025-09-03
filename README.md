@@ -73,17 +73,17 @@ On Windows
     * If no ID is provided → rolls back to the parent of the current active version.
 
 * **HISTORY `<filename>`**
-  Lists all snapshotted versions of the file chronologically, showing:
+  Lists all snapshotted versions of the file chronologically, which lie on the path from active node to the root in the file tree, showing:
 
     * Version ID
     * Timestamp
     * Message
 
-* **RECENT FILES**
-  Lists files in descending order of their last modification time.
+* **RECENT FILES `[num]`**
+  Lists files in descending order of their last modification time restricted to the first num entries. If no num is provided, it shows all files.
 
-* **BIGGEST TREES**
-  Lists files in descending order of their total version count.
+* **BIGGEST TREES `[num]`**
+  Lists files in descending order of their total version count restricted to the first num entries. If no num is provided, it shows all files.
 
 * **DETAILS `<filename>`**
   Shows summary of file.

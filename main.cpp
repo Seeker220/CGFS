@@ -68,9 +68,14 @@ int main() {
                                                           If no ID is provided, it rolls back to the parent of the current
                                                           active version.
         HISTORY <filename>                              : Lists all snapshotted versions of the file chronologically,
-                                                          showing their ID, timestamp, and message.
-        RECENT FILES                                    : Lists files in descending order of their last modification time.
-        BIGGEST TREES                                   : Lists files in descending order of their total version count.
+                                                          which lie on the path from active node to the root in the file
+                                                          tree, showing their ID, timestamp, and message.
+        RECENT FILES [num]                              : Lists files in descending order of their last modification time
+                                                          restricted to the first num entries. If no num is provided, it
+                                                          shows all files.
+        BIGGEST TREES [num]                             : Lists files in descending order of their total version count
+                                                          restricted to the first num entries. If no num is provided, it
+                                                          shows all files.
         DETAILS <filename>                              : Shows summary of file.
         VERSIONS <filename>                             : Shows details of all versions of file.
         COMPARE <filename> <versionID-1> [versionID-2]  : Shows the diff versionID-1 -> versionID-2. If not provided,
@@ -160,9 +165,19 @@ int main() {
                     fs.compare(filename, v1);
                 }
             } else if (command == "recentfiles" || command == "recent" || command == "recent_files") {
-                fs.print_recent_files();
+                int num;
+                if (ss >> num) {
+                    fs.print_recent_files(num);
+                } else {
+                    fs.print_recent_files();
+                }
             } else if (command == "biggesttrees" || command == "biggest" || command == "biggest_trees") {
-                fs.print_biggest_trees();
+                int num;
+                if (ss >> num) {
+                    fs.print_biggest_trees(num);
+                } else {
+                    fs.print_biggest_trees();
+                }
             } else if (command.empty()) {
                 std::cout << "Please enter a command.\n";
             } else {
