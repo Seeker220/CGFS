@@ -9,7 +9,6 @@
 #include <stdexcept>
 #include <ctime>
 #include <iostream>
-#include <algorithm>
 
 
 class FileSystem {
@@ -147,11 +146,8 @@ public:
             current = current->parent;
         }
         snapshots.push_back(current);
-        std::sort(snapshots.rbegin(), snapshots.rend(), [](const TreeNode *a, const TreeNode *b) {
-            return a->snapshot_timestamp < b->snapshot_timestamp;
-        });
-        for (TreeNode *&snap: snapshots) {
-            std::cout << "VersionID : " << snap->version_id << " TimeStamp : " << snap->snapshot_timestamp <<
+        for (TreeNode *&snap: std::ranges::reverse_view(snapshots)) {
+            std::cout << "VersionID : " << snap->version_id << " TimeStamp : " << timeToString(snap->snapshot_timestamp) <<
                     " Message : " << snap->message << "\n";
         }
     }
