@@ -10,9 +10,10 @@ std::string rawinput() {
     std::string rawstring;
     char ch;
     bool newLine = true;
-    
+
     while (std::cin.get(ch)) {
-        if (ch == '\x07') { // Ctrl+G (ASCII 7 - BEL character)
+        if (ch == '\x07') {
+            // Ctrl+G (ASCII 7 - BEL character)
             // Consume any immediately following newline to prevent it from
             // being interpreted as an empty command in the main loop
             if (std::cin.peek() == '\n') {
@@ -28,12 +29,12 @@ std::string rawinput() {
             newLine = false;
         }
     }
-    
+
     // Remove trailing newline if present to match original behavior
     if (!rawstring.empty() && rawstring.back() == '\n') {
         rawstring.pop_back();
     }
-    
+
     return rawstring;
 }
 

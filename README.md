@@ -46,60 +46,69 @@ On Windows
 ```
 
 
-### Commands
+### Commands and Complexities
+Let's define the following:
+* `N`: Total number of files
+* `V`: Total number of versions for a single file
+* `D`: Depth of active_version node of a file
+* `L`: Length of content
 
-* **CREATE `<filename>`**
+We are going to ignore complexity to take input/ print output.
+
+**COMMANDS:**
+
+* **CREATE `<filename>`** `O(N log(N))`  
   Creates a file with a root version (ID 0), empty content, and an initial snapshot message.
 
-* **READ `<filename>`**
+* **READ `<filename>`** `O(1)`  
   Displays the content of the file's currently active version.
 
-* **INSERT `<filename>` `<content>`**
+* **INSERT `<filename>` `<content>`** `O(L + log(N))`  
   Appends content to the file.
 
     * If the active version is already a snapshot → creates a new version.
     * Otherwise → modifies the active version in place.
 
-* **UPDATE `<filename>` `<content>`**
+* **UPDATE `<filename>` `<content>`** `O(L + log(N))`  
   Replaces the file's content. Follows the same versioning logic as `INSERT`.
 
-* **SNAPSHOT `<filename>` `<message>`**
+* **SNAPSHOT `<filename>` `<message>`** `O(1)`  
   Marks the active version as a snapshot, making its content immutable.
   Stores the provided message and the current time.
 
-* **ROLLBACK `<filename>` `[versionID]`**
+* **ROLLBACK `<filename>` `[versionID]`** `O(1)`  
   Sets the active version pointer to the specified `versionID`.
 
     * If no ID is provided → rolls back to the parent of the current active version.
 
-* **HISTORY `<filename>`**
+* **HISTORY `<filename>`** `O(D)`  
   Lists all snapshotted versions of the file chronologically, which lie on the path from active node to the root in the file tree, showing:
 
     * Version ID
     * Timestamp
     * Message
 
-* **RECENT FILES `[num]`**
+* **RECENT FILES `[num]`** `O(num log(N) + N)`  
   Lists files in descending order of their last modification time restricted to the first num entries. If no num is provided, it shows all files.
 
-* **BIGGEST TREES `[num]`**
+* **BIGGEST TREES `[num]`** `O(num log(N) + N)`  
   Lists files in descending order of their total version count restricted to the first num entries. If no num is provided, it shows all files.
 
-* **DETAILS `<filename>`**
+* **DETAILS `<filename>`** `O(1)`  
   Shows summary of file.
 
-* **VERSIONS `<filename>`**
+* **VERSIONS `<filename>`** `O(V)`  
   Shows details of all versions of file.
 
-* **COMPARE `<filename>` `<versionID-1>` `[versionID-2]`**
+* **COMPARE `<filename>` `<versionID-1>` `[versionID-2]`** `O(N₁*N₂) Nᵢ is number of lines in Vᵢ`  
   Shows the diff between versions.
 
     * Default for `versionID-2` is the active version.
 
-* **help**
+* **help**  
   Displays this message.
 
-* **exit**
+* **exit**  
   Quit.
 
 

@@ -132,7 +132,7 @@ public:
     }
 
     void history(const std::string &filename) const {
-        // shows snapshotted versions of the file in ascending order of snapshot_timestamp, which lie on the path from active_node to the root in the file tree
+        // shows snapshotted versions of the file in ascending order of created_timestamp, which lie on the path from active_node to the root in the file tree
         if (!(files.count(filename))) {
             throw std::out_of_range("No file exists with given filename.");
         }
@@ -147,7 +147,8 @@ public:
         }
         snapshots.push_back(current);
         for (TreeNode *&snap: std::ranges::reverse_view(snapshots)) {
-            std::cout << "VersionID : " << snap->version_id << " TimeStamp : " << timeToString(snap->snapshot_timestamp) <<
+            std::cout << "VersionID : " << snap->version_id << " TimeStamp : " << timeToString(snap->snapshot_timestamp)
+                    <<
                     " Message : " << snap->message << "\n";
         }
     }
@@ -176,7 +177,7 @@ public:
                     << "\n";
             i++;
         }
-        recent_files.build(tempv);
+        recent_files.append(tempv);
     }
 
     void print_recent_files() {
@@ -203,7 +204,7 @@ public:
             std::cout << "Filename : " << big_tree.key << ", Total Version : " << big_tree.value << "\n";
             i++;
         }
-        biggest_trees.build(tempv);
+        biggest_trees.append(tempv);
     }
 
     void print_biggest_trees() {

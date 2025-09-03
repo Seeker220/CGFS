@@ -176,41 +176,16 @@ public:
             sift_down(i);
         }
     }
-};
 
-template<typename T, typename Compare = std::greater<T> >
-class Heap {
-    // wrapper of simple heap around indexed heap
-private:
-    IndexedHeap<T, T, Compare> internal_heap;
-
-public:
-    size_t size() const {
-        return internal_heap.size();
-    }
-
-    bool empty() const {
-        return internal_heap.empty();
-    }
-
-    void push(const T &value) {
-        internal_heap.push(value, value);
-    }
-
-    void pop() {
-        internal_heap.pop();
-    }
-
-    const T &top() const {
-        return internal_heap.top().value;
-    }
-
-    void build(const std::vector<T> &items) {
-        std::vector<Element<T, T> > elements;
-        for (const T &item: items) {
-            elements.push_back({item, item});
+    void append(const std::vector<Element<K, V> > &items) {
+        // append array of elements to heap in O(n)
+        for (int i = 0; i < items.size(); i++) {
+            ind_map.insert(items[i].key, i + size());
         }
-        internal_heap.build(elements);
+        heap.insert(heap.end(), items.begin(), items.end());
+        for (int i = parent(heap.size() - 1); i >= 0; --i) {
+            sift_down(i);
+        }
     }
 };
 
