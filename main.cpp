@@ -3,9 +3,6 @@
 #include <string>
 #include <cctype>
 #include <sstream>
-#include <unistd.h>
-#include <chrono>
-#include <thread>
 
 std::string rawinput() {
     // function to take multi-line input
@@ -19,13 +16,7 @@ std::string rawinput() {
         rawstring += line;
         first = false;
     }
-    // Clear error flags including EOF
     std::cin.clear();
-    // Try to ensure input stream is ready for next operation
-    if (isatty(STDIN_FILENO)) {
-        // For interactive terminals, the stream should be ready after clear()
-        // No additional action needed for terminal input
-    }
     return rawstring;
 }
 
@@ -40,21 +31,15 @@ int main() {
     FileSystem fs;
     std::string line;
     std::cout << "Welcome to COL106 Git v1.0.0\n";
-    std::cout << "Enter 'exit' to quit.\n";
+    std::cout << "Enter 'exit' or 'Ctrl+Z + Enter' on Windows or 'Ctrl+D' on Linux to quit.\n";
     std::cout << "Enter 'help' to display help.\n";
 
     while (true) {
         // loops until exit
         std::cout << "> ";
         if (!std::getline(std::cin, line)) {
-            // Only exit if we're not running interactively or if it's a non-EOF error
-            if (!isatty(STDIN_FILENO) || !std::cin.eof()) {
-                std::cout << "Exiting COL106 Git v1.0.0. Bye!\n";
-                break;
-            }
-            // For interactive EOF, clear and continue
-            std::cin.clear();
-            continue;
+            std::cout << "Exiting COL106 Git v1.0.0. Bye!\n";
+            break;
         }
         std::stringstream ss(line);
         std::string command;
