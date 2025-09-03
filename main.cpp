@@ -3,6 +3,9 @@
 #include <string>
 #include <cctype>
 #include <sstream>
+#include <unistd.h>
+#include <chrono>
+#include <thread>
 
 std::string rawinput() {
     // function to take multi-line input
@@ -16,6 +19,7 @@ std::string rawinput() {
         rawstring += line;
         first = false;
     }
+    // Clear error flags including EOF
     std::cin.clear();
     return rawstring;
 }
@@ -34,13 +38,32 @@ int main() {
     std::cout << "Enter 'exit' or 'Ctrl+Z + Enter' on Windows or 'Ctrl+D' on Linux to quit.\n";
     std::cout << "Enter 'help' to display help.\n";
 
+    int eof_retries = 0;
+    const int max_eof_retries = 3;
     while (true) {
         // loops until exit
         std::cout << "> ";
         if (!std::getline(std::cin, line)) {
-            std::cout << "Exiting COL106 Git v1.0.0. Bye!\n";
-            break;
+            // Handle input failure
+            if (std::cin.eof()) {
+                std::cin.clear();
+                eof_retries++;
+                if (eof_retries <= max_eof_retries) {
+                    // Try a short delay and continue
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    continue;
+                }
+                // Too many consecutive EOF failures, probably no more input
+                std::cout << "Exiting COL106 Git v1.0.0. Bye!\n";
+                break;
+            } else {
+                // Non-EOF error
+                std::cout << "Exiting COL106 Git v1.0.0. Bye!\n";
+                break;
+            }
         }
+        // Reset EOF retry counter on successful read
+        eof_retries = 0;
         std::stringstream ss(line);
         std::string command;
         ss >> command;
