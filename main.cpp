@@ -6,17 +6,29 @@
 
 std::string rawinput() {
     // function to take multi-line input
+    // Use Ctrl+G (ASCII 7) to terminate input instead of EOF
     std::string rawstring;
-    std::string line;
-    bool first = true;
-    while (std::getline(std::cin, line)) {
-        if (!first) {
-            rawstring.append("\n");
+    char ch;
+    bool newLine = true;
+    
+    while (std::cin.get(ch)) {
+        if (ch == '\x07') { // Ctrl+G (ASCII 7 - BEL character)
+            break;
         }
-        rawstring += line;
-        first = false;
+        if (ch == '\n') {
+            rawstring += ch;
+            newLine = true;
+        } else {
+            rawstring += ch;
+            newLine = false;
+        }
     }
-    std::cin.clear();
+    
+    // Remove trailing newline if present to match original behavior
+    if (!rawstring.empty() && rawstring.back() == '\n') {
+        rawstring.pop_back();
+    }
+    
     return rawstring;
 }
 
@@ -31,7 +43,7 @@ int main() {
     FileSystem fs;
     std::string line;
     std::cout << "Welcome to COL106 Git v1.0.0\n";
-    std::cout << "Enter 'exit' or 'Ctrl+Z + Enter' on Windows or 'Ctrl+D' on Linux to quit.\n";
+    std::cout << "Enter 'exit' to quit.\n";
     std::cout << "Enter 'help' to display help.\n";
 
     while (true) {
@@ -83,8 +95,7 @@ int main() {
         help                                            : Displays this message.
         exit                                            : Quit.
     MultiLine Content and Message:
-        First type <command> <filename> and press enter to begin MultiLine Content or Message. Press 'Ctrl+Z + Enter' on
-        Windows or 'Ctrl+D' on Linux to end MultiLine Input.
+        First type <command> <filename> and press enter to begin MultiLine Content or Message. Press 'Ctrl+G' to end MultiLine Input.
     Note: Command case does not matter.
 )";
                 std::cout << help;
@@ -105,7 +116,7 @@ int main() {
                 if (!(ss >> filename)) {
                     throw std::invalid_argument("INSERT requires a filename.");
                 }
-                std::cout << "Enter content (end with 'Ctrl+Z + Enter' on Windows or 'Ctrl+D' on Linux):\n";
+                std::cout << "Enter content (end with 'Ctrl+G'):\n";
                 std::string content = rawinput();
                 fs.insert(filename, content);
             } else if (command == "update") {
@@ -113,7 +124,7 @@ int main() {
                 if (!(ss >> filename)) {
                     throw std::invalid_argument("UPDATE requires a filename.");
                 }
-                std::cout << "Enter content (end with 'Ctrl+Z + Enter' on Windows or 'Ctrl+D' on Linux):\n";
+                std::cout << "Enter content (end with 'Ctrl+G'):\n";
                 std::string content = rawinput();
                 fs.update(filename, content);
             } else if (command == "snapshot") {
@@ -121,7 +132,7 @@ int main() {
                 if (!(ss >> filename)) {
                     throw std::invalid_argument("SNAPSHOT requires a filename.");
                 }
-                std::cout << "Enter snapshot message (end with 'Ctrl+Z + Enter' on Windows or 'Ctrl+D' on Linux):\n";
+                std::cout << "Enter snapshot message (end with 'Ctrl+G'):\n";
                 std::string message = rawinput();
                 fs.snapshot(filename, message);
             } else if (command == "rollback") {

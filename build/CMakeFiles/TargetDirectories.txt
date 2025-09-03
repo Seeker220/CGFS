@@ -1,3 +1,0 @@
-/home/runner/work/CGFS/CGFS/build/CMakeFiles/CGFS.dir
-/home/runner/work/CGFS/CGFS/build/CMakeFiles/edit_cache.dir
-/home/runner/work/CGFS/CGFS/build/CMakeFiles/rebuild_cache.dir
