@@ -28,20 +28,20 @@ struct Element {
     K key;
     V value;
 
+    Element() = default;
+
     Element(K k, V v) {
         key = k;
         value = v;
     }
 };
 
-template<typename Comp>
+template<typename K, typename V, typename Compare>
 struct NestedElementComparator {
-    Comp comp;
+    Compare comp;
 
-    template<typename K, typename V>
-    bool operator()(const Element<int, Element<K, V> > &lhs,
-                    const Element<int, Element<K, V> > &rhs) const {
-        return comp(lhs.value.value, rhs.value.value);
+    bool operator()(const Element<K, V> &lhs, const Element<K, V> &rhs) const {
+        return comp(lhs.value, rhs.value);
     }
 };
 
@@ -206,9 +206,9 @@ public:
         if (k > size()) {
             k = size();
         }
-        IndexedHeap<int, Element<K, V>, NestedElementComparator<Compare> > aux_heap;
+        IndexedHeap<int, Element<K, V>, NestedElementComparator<K, V, Compare> > aux_heap;
         std::vector<Element<K, V> > ret;
-        aux_heap.push({0, heap[0]});
+        aux_heap.push(0, heap[0]);
         for (int i = 0; i < k; i++) {
             ret.push_back(aux_heap.top().value);
             int cur = aux_heap.top().key;
