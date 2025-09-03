@@ -3,13 +3,13 @@
 #include <string>
 #include <cctype>
 #include <sstream>
+#include <iomanip>
 
 std::string rawinput() {
     // function to take multi-line input
     // Use Ctrl+G (ASCII 7) to terminate input instead of EOF
     std::string rawstring;
     char ch;
-    bool newLine = true;
 
     while (std::cin.get(ch)) {
         if (ch == '\x07') {
@@ -21,13 +21,7 @@ std::string rawinput() {
             }
             break;
         }
-        if (ch == '\n') {
-            rawstring += ch;
-            newLine = true;
-        } else {
-            rawstring += ch;
-            newLine = false;
-        }
+        rawstring += ch;
     }
 
     // Remove trailing newline if present to match original behavior
@@ -51,6 +45,7 @@ int main() {
     std::cout << "Welcome to COL106 Git v1.0.0\n";
     std::cout << "Enter 'exit' to quit.\n";
     std::cout << "Enter 'help' to display help.\n";
+    std::cout << "Note: Filenames with spaces must be enclosed in double quotes (e.g., \"My Document.txt\").\n";
 
     while (true) {
         // loops until exit
@@ -103,23 +98,24 @@ int main() {
     MultiLine Content and Message:
         First type <command> <filename> and press enter to begin MultiLine Content or Message. Press 'Ctrl+G' to end MultiLine Input.
     Note: Command case does not matter.
+    Note: Enclose space-containing filenames in quotes (eg: "My Document.txt").
 )";
                 std::cout << help;
             } else if (command == "create") {
                 std::string filename;
-                if (!(ss >> filename)) {
+                if (!(ss >> std::quoted(filename))) {
                     throw std::invalid_argument("CREATE requires a filename.");
                 }
                 fs.create(filename);
             } else if (command == "read") {
                 std::string filename;
-                if (!(ss >> filename)) {
+                if (!(ss >> std::quoted(filename))) {
                     throw std::invalid_argument("READ requires a filename.");
                 }
                 std::cout << fs.read(filename) << "\n";
             } else if (command == "insert") {
                 std::string filename;
-                if (!(ss >> filename)) {
+                if (!(ss >> std::quoted(filename))) {
                     throw std::invalid_argument("INSERT requires a filename.");
                 }
                 std::cout << "Enter content (end with 'Ctrl+G'):\n";
@@ -127,7 +123,7 @@ int main() {
                 fs.insert(filename, content);
             } else if (command == "update") {
                 std::string filename;
-                if (!(ss >> filename)) {
+                if (!(ss >> std::quoted(filename))) {
                     throw std::invalid_argument("UPDATE requires a filename.");
                 }
                 std::cout << "Enter content (end with 'Ctrl+G'):\n";
@@ -135,7 +131,7 @@ int main() {
                 fs.update(filename, content);
             } else if (command == "snapshot") {
                 std::string filename;
-                if (!(ss >> filename)) {
+                if (!(ss >> std::quoted(filename))) {
                     throw std::invalid_argument("SNAPSHOT requires a filename.");
                 }
                 std::cout << "Enter snapshot message (end with 'Ctrl+G'):\n";
@@ -144,7 +140,7 @@ int main() {
             } else if (command == "rollback") {
                 std::string filename;
                 int versionID;
-                if (!(ss >> filename)) {
+                if (!(ss >> std::quoted(filename))) {
                     throw std::invalid_argument("ROLLBACK requires a filename.");
                 }
                 if (ss >> versionID) {
@@ -154,26 +150,26 @@ int main() {
                 }
             } else if (command == "history") {
                 std::string filename;
-                if (!(ss >> filename)) {
+                if (!(ss >> std::quoted(filename))) {
                     throw std::invalid_argument("HISTORY requires a filename.");
                 }
                 fs.history(filename);
             } else if (command == "details") {
                 std::string filename;
-                if (!(ss >> filename)) {
+                if (!(ss >> std::quoted(filename))) {
                     throw std::invalid_argument("DETAILS requires a filename.");
                 }
                 fs.details(filename);
             } else if (command == "versions") {
                 std::string filename;
-                if (!(ss >> filename)) {
+                if (!(ss >> std::quoted(filename))) {
                     throw std::invalid_argument("VERSIONS requires a filename.");
                 }
                 fs.versions(filename);
             } else if (command == "compare") {
                 std::string filename;
                 int v1, v2;
-                if (!(ss >> filename >> v1)) {
+                if (!(ss >> std::quoted(filename) >> v1)) {
                     throw std::invalid_argument("COMPARE requires a filename and at least one VersionID.");
                 }
                 if (ss >> v2) {
