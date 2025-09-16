@@ -17,7 +17,7 @@ A simplified, in-memory version control system inspired by Git
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone https://gist.github.com/a114dc3df2ec8fcb7f5a0402815f502f.git cgfs
 ```
 
 Go to the project directory
@@ -57,7 +57,7 @@ We are going to ignore complexity to take input/ print output.
 
 **COMMANDS:**
 
-* **CREATE `<filename>`** `O(N log(N))`  
+* **CREATE `<filename>`** `O(log(N))`  
   Creates a file with a root version (ID 0), empty content, and an initial snapshot message.
 
 * **READ `<filename>`** `O(1)`  
