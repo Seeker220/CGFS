@@ -112,7 +112,7 @@ public:
         if (!(files.get(filename)->version_map.count(versionID))) {
             throw std::out_of_range("File doesn't have given versionID.");
         }
-        std::cout << "Rolled back '" << filename << "' from v" << files.get(filename)->active_version << " to v" <<
+        std::cout << "Rolled back '" << filename << "' from v" << files.get(filename)->active_version->version_id << " to v" <<
                 versionID << ".\n";
         files.get(filename)->active_version = files.get(filename)->version_map.get(versionID);
     }
@@ -126,7 +126,7 @@ public:
         if (file->active_version->parent == nullptr) {
             throw std::invalid_argument("Cannot rollback from root version");
         }
-        std::cout << "Rolled back '" << filename << "' from v" << files.get(filename)->active_version << " to parent v"
+        std::cout << "Rolled back '" << filename << "' from v" << files.get(filename)->active_version->version_id << " to parent v"
                 << file->active_version->parent->version_id << ".\n";
         file->active_version = file->active_version->parent;
     }
